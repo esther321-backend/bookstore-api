@@ -60,9 +60,6 @@ def list_books(
             query = query.where(Book.stock == 0)
             
     return session.exec(query.offset(skip).limit(limit)).all()
-
-
-# 3. SEARCH BOOKS BY TITLE OR AUTHOR (GET /books/search)
 @app.get("/books/search", response_model=List[Book])
 def search_books(q: str, session: Session = Depends(get_session)):
     """Search for books matching the search string in title or author"""
@@ -72,7 +69,6 @@ def search_books(q: str, session: Session = Depends(get_session)):
     return session.exec(query).all()
 
 
-# 4. GET SPECIFIC BOOK BY ID (GET /books/{book_id})
 @app.get("/books/{book_id}", response_model=Book)
 def get_book(book_id: int, session: Session = Depends(get_session)):
     """Retrieve a single book's details by ID"""
@@ -82,7 +78,6 @@ def get_book(book_id: int, session: Session = Depends(get_session)):
     return book
 
 
-# 5. UPDATE A BOOK (PATCH /books/{book_id})
 @app.patch("/books/{book_id}", response_model=Book)
 def update_book(
     book_id: int,
@@ -94,7 +89,6 @@ def update_book(
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     
-    # Apply modifications
     update_data = book_update.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(book, key, value)
@@ -105,7 +99,6 @@ def update_book(
     return book
 
 
-# 6. DELETE A BOOK (DELETE /books/{book_id})
 @app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_book(book_id: int, session: Session = Depends(get_session)):
     """Delete a book from the inventory"""
